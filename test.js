@@ -1,4 +1,4 @@
-import { tokenizer, parser } from "./compiler.js";
+import { tokenizer, parser, transformer } from "./compiler.js";
 import assert from "assert";
 
 const input = "(add 2 (subtract 4 2))";
@@ -94,6 +94,11 @@ assert.deepStrictEqual(
   parser(tokens),
   ast,
   "Parser should turn `tokens` array into `ast`"
+);
+assert.deepStrictEqual(
+  transformer(ast),
+  newAst,
+  "Transformer should turn `ast` into a `newAst`"
 );
 
 console.log("All Passed!");
