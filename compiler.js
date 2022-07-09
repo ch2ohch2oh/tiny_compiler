@@ -1,5 +1,8 @@
+import { assert } from "console";
+
 /**
  * Break down a string into list of tokens
+ * Valid token types are: paren, number, stirng and name
  * @param {string} input string to be tokenized
  */
 function tokenizer(input) {
@@ -65,4 +68,53 @@ function tokenizer(input) {
   return tokens;
 }
 
-export { tokenizer };
+/**
+ * Convert the list of tokens into an AST
+ * @param {*} tokens
+ */
+function parser(tokens) {
+  let current = 0;
+
+  // Walk through the token list and build an AST
+  function walk() {
+    let token = tokens[current];
+    if (token.type === "number") {
+      current++;
+      return { type: "NumberLiteral", value: token.value };
+    }
+    if (token.type === "string") {
+      current++;
+      return { type: "StringLiteral", value: token.value };
+    }
+    if (token.type === "paren" && token.value === "(") {
+      token = tokens[++current];
+      // Cannot have empty parenthesis like ()
+      assert(token.type === "name");
+      let node = { type: "CallExpression", name: token.value, params: [] };
+      // Skip the name token, i.e. function name
+      token = tokens[++current];
+      while (
+        token.type !== "paren" ||
+        (token.type === "paren" && token.value !== ")")
+      ) {
+        node.params.push(walk());
+        token = tokens[current];
+      }
+      // Skip closing paren
+      current++;
+      return node;
+    }
+    throw new TypeError(
+      "Unknown token: " + JSON.stringify(token) + " token position = " + current
+    );
+  }
+
+  let ast = { type: "Program", body: [] };
+
+  while (current < tokens.length) {
+    ast.body.push(walk());
+  }
+  return ast;
+}
+
+export { tokenizer, parser };
