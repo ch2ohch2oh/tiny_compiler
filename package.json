@@ -1,0 +1,12 @@
+{
+  "name": "tiny_compiler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "compiler.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC"
+}
