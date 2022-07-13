@@ -1,4 +1,10 @@
-import { tokenizer, parser, transformer } from "./compiler.js";
+import {
+  tokenizer,
+  parser,
+  transformer,
+  codeGenerator,
+  compiler,
+} from "./compiler.js";
 import assert from "assert";
 
 const input = "(add 2 (subtract 4 2))";
@@ -99,6 +105,16 @@ assert.deepStrictEqual(
   transformer(ast),
   newAst,
   "Transformer should turn `ast` into a `newAst`"
+);
+assert.deepStrictEqual(
+  codeGenerator(newAst),
+  output,
+  "Code Generator should turn `newAst` into `output` string"
+);
+assert.deepStrictEqual(
+  compiler(input),
+  output,
+  "Compiler should turn `input` into `output`"
 );
 
 console.log("All Passed!");
